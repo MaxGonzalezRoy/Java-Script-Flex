@@ -1,53 +1,49 @@
-
-
-
-
-function iniciarFormulario() {
+// Se crea una función para cambiar los nombres para que sean más fáciles de interpretar por el usuario
+function nombresAdaptados(campo) {
+    switch (campo) {
+        case 'name': return 'nombre';
+        case 'email': return 'correo electrónico';
+        case 'phone': return 'teléfono';
+        case 'password': return 'contraseña';
+        case 'confirmPassword': return 'confirmar contraseña';
+        default: return campo;
+    }
+}
+// Se crea un formulario en el cual se van a registrar los usuarios de la página y sus campos a solicitar
+function formularioRegistro() {
     const campos = ['name', 'email', 'phone', 'password', 'confirmPassword'];
-    const nombresAdaptados = {
-        'name': 'nombre',
-        'email': 'correo electrónico',
-        'phone': 'teléfono',
-        'password': 'contraseña',
-        'confirmPassword': 'confirmar contraseña'
-    };
-    let valores = [];
-
+    const valores = {};
+    // Se recolectan y validan los datos de los usuarios
     for (let i = 0; i < campos.length; i++) {
-        let valor;
         const campoActual = campos[i];
-        const mensajePrompt = `Por favor, ingresa tu ${nombresAdaptados[campoActual]}`;
-        
+        const mensaje = `Por favor, ingresa tu ${nombresAdaptados(campoActual)}`;
+        let valor;
+        //Se crea un bucle en el cual si el usuario ingresa mal o no ingresa un dato segun el campo le retorna un mensaje especifico
         do {
-            valor = prompt(mensajePrompt);
-            if (campoActual === 'email' && !verificarEmail(valor)) {
+            valor = prompt(mensaje);
+            if (!valor) {
+                alert(`El campo ${nombresAdaptados(campoActual)} no puede estar vacío.`);
+            } else if (campoActual === 'email' && !verificarEmail(valor)) {
                 alert('Por favor, ingresa un correo electrónico válido.');
+                valor = '';
             } else if (campoActual === 'phone' && !verificarTelefono(valor)) {
                 alert('El teléfono solo debe contener números.');
-            } else if (!valor) {
-                alert(`El campo ${nombresAdaptados[campoActual]} no puede estar vacío.`);
+                valor = '';
             }
-        } while (
-            (campoActual === 'email' && !verificarEmail(valor)) ||
-            (campoActual === 'phone' && !verificarTelefono(valor)) ||
-            !valor
-        );
-        
-        valores.push(valor.trim());
+        } while (!valor || (campoActual === 'email' && !verificarEmail(valor)) || (campoActual === 'phone' && !verificarTelefono(valor)));
+        // Guarda el valor ingresado en el objeto "valores" correspondiente y se utiliza ".trim" para evitar los espacios en blanco
+        valores[campoActual] = valor.trim();
     }
-
-    let [name, email, phone, password, confirmPassword] = valores;
-
-    if (!verificarCamposRequeridos(valores)) {
+    if (Object.values(valores).some(valor => !valor)) {
         alert('Todos los campos requeridos deben ser completados.');
         return;
     }
-
-    while (!verificarContraseñas(password, confirmPassword)) {
+    // Confirmación de contraseñas
+    while (!verificarContraseñas(valores.password, valores.confirmPassword)) {
         alert('Las contraseñas no coinciden. Solo ingresa la confirmación de nuevo.');
-        confirmPassword = prompt('Por favor, confirma tu contraseña');
+        valores.confirmPassword = prompt('Por favor, confirma tu contraseña');
     }
-
+    // Si todo es correcto
     alert('¡Inscripción completada con éxito!');
-    console.log(`Datos registrados: Nombre: ${name}, Correo: ${email}, Teléfono: ${phone}`);
+    console.log(`Datos registrados: Nombre: ${valores.name}, Correo: ${valores.email}, Teléfono: ${valores.phone}`);
 }
