@@ -15,7 +15,9 @@ Este proyecto es una implementación de un sistema de registro de usuarios en Ja
 
 ## Consideraciones
 
-Este proyecto se ha realizado teniendo en cuenta el trabajo final, el cual contará con un apartado de registro de usuarios. La implementación actual proporciona una base para la funcionalidad de registro que se integrará en el proyecto final.
+Este proyecto se ha desarrollado teniendo en cuenta el trabajo final, el cual incluirá una sección de registro de usuarios. La implementación actual proporciona una base para esta funcionalidad, la cual se integrará en el proyecto final.
+
+Para más detalles, puede consultar el código en el [repositorio de GitHub](https://github.com/MaxGonzalezRoy/Pre-entrega-1.git).
 
 
 Atentamente,
