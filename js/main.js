@@ -22,7 +22,7 @@ function verificarContraseñas(password, confirmPassword) {
     return password === confirmPassword;
 }
 
-// Cambia los nombres de los campos a un formato más amigable para el usuario
+// Cambia los nombres de los campos a un formato más amigable para el usuario, sino se podria efectuar con un "constructor"
 function nombresAdaptados(campo) {
     switch (campo) {
         case 'name': return 'nombre';
