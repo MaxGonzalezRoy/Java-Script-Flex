@@ -36,3 +36,8 @@ button:hover {
     padding: 10px;
     margin-bottom: 5px;
 }
+
+#delete-button {
+    margin-left: 10px;
+    background-color: crimson;
+}

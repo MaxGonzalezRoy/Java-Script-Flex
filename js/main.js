@@ -105,33 +105,78 @@ function crearReserva() {
     // Mostrar las reservas
     mostrarReservas();
 
-     // Limpiar el formulario
+    // Limpiar el formulario
     form.reset();
 }
-    
-    // Función para mostrar las reservas
-    function mostrarReservas() {
-        const reservas = JSON.parse(localStorage.getItem('reservas')) || [];
-    
-        // Limpiar la lista antes de mostrar
-        reservationList.innerHTML = '';
-    
-        if (reservas.length === 0) {
-            reservationList.textContent = 'No hay reservas realizadas.';
-            return;
-        }
-    
-        // Crear lista de reservas
-        const ul = document.createElement('ul');
-        reservas.forEach((reserva, index) => {
-            const li = document.createElement('li');
-            li.textContent = `Reserva ${index + 1}: Entrada - ${reserva.checkInDate}, Salida - ${reserva.checkOutDate}, Habitación - ${reserva.roomType}`;
-            ul.appendChild(li);
-        });
-    
-        // Añadir la lista al contenedor
-        reservationList.appendChild(ul);
+
+// Función para mostrar las reservas
+function mostrarReservas() {
+    const reservas = JSON.parse(localStorage.getItem('reservas')) || [];
+
+    // Limpiar la lista antes de mostrar
+    reservationList.innerHTML = '';
+
+    if (reservas.length === 0) {
+        reservationList.textContent = 'No hay reservas realizadas.';
+        return;
     }
-    
-    // Mostrar reservas al cargar la página
+
+    const reservasFormateadas = formatearReservas(reservas);
+
+    // Crear lista de reservas
+    const ul = document.createElement('ul');
+    reservasFormateadas.forEach((reservaFormateada, index) => {
+        const li = document.createElement('li');
+        li.textContent = reservaFormateada;
+        
+        // Se crea un botón para eliminar cada reserva
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.id = 'delete-button';
+        
+        // Se le añade el evento click
+        deleteButton.addEventListener('click', () => eliminarReserva(index));
+        
+        // Se agrega el botón de eliminar al elemento de la lista de reservas
+        li.appendChild(deleteButton);
+        ul.appendChild(li);
+    });
+
+    // Añadir la lista al contenedor
+    reservationList.appendChild(ul);
+}
+
+// Función para eliminar la reserva
+function eliminarReserva(index) {
+    let reservas = JSON.parse(localStorage.getItem('reservas')) || [];
+
+    // Elimina la reserva del array
+    reservas.splice(index, 1);
+
+    // Actualiza la lista de reservas
+    localStorage.setItem('reservas', JSON.stringify(reservas));
+
+    // Mostrar las reservas actualizadas
     mostrarReservas();
+}
+
+// Muestra las reservas al cargar la página
+mostrarReservas();
+
+// Se crea una validación para que las fechas no sean anteriores a la fecha actual
+const today = new Date().toISOString().split('T')[0];
+inputCheckIn.setAttribute('min', today);
+inputCheckOut.setAttribute('min', today);
+
+// Se crea una función para formatear las reservas
+function formatearReservas(reservas) {
+    return reservas.map(reserva => 
+        `Reserva: Entrada - ${formatearFecha(reserva.checkInDate)}, Salida - ${formatearFecha(reserva.checkOutDate)}, Habitación - ${reserva.roomType.charAt(0).toUpperCase() + reserva.roomType.slice(1)}`
+    );
+}
+
+// Función auxiliar para formatear la fecha al formato "DD/MM/YYYY" según la norma ISO 8601
+function formatearFecha(fechaISO) {
+    const [year, month, day] = fechaISO.split('-');
+    return `${day}/${month}/${year}`;
+}
