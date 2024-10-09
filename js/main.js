@@ -81,12 +81,13 @@ function crearReserva() {
 
     // Validamos que las fechas tengan sentido
     if (new Date(checkInDate) >= new Date(checkOutDate)) {
-        // Mostrar mensaje en la interfaz en vez de alert
+        // Mostrar mensaje
         const errorMsg = document.createElement('p');
         errorMsg.textContent = 'La fecha de entrada debe ser anterior a la de salida.';
         errorMsg.style.color = 'red';
         reserve.appendChild(errorMsg);
-        setTimeout(() => errorMsg.remove(), 3000); // Borrar mensaje después de 3 segundos
+        // Borrar mensaje después de 3 segundos
+        setTimeout(() => errorMsg.remove(), 3000);
         return;
     }
 
@@ -110,11 +111,11 @@ function crearReserva() {
 }
 
 // Función para mostrar las reservas
-function mostrarReservas() {
-    const reservas = JSON.parse(localStorage.getItem('reservas')) || [];
-
+const mostrarReservas = () => {
+    const reservas = getReservas();
+    
     // Limpiar la lista antes de mostrar
-    reservationList.innerHTML = '';
+    reservationList.textContent = '';
 
     if (reservas.length === 0) {
         reservationList.textContent = 'No hay reservas realizadas.';
@@ -152,7 +153,6 @@ function eliminarReserva(index) {
 
     // Elimina la reserva del array
     reservas.splice(index, 1);
-
     // Actualiza la lista de reservas
     localStorage.setItem('reservas', JSON.stringify(reservas));
 
