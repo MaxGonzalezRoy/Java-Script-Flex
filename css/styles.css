@@ -2,14 +2,13 @@
 body {
     font-family: "Outfit", sans-serif;
     font-optical-sizing: auto;
-    font-weight: weight;
+    font-weight: normal;
     font-style: normal;
     background-color: #f3eeea;
-    margin: 0 auto;
-    
+    margin: 0;
 }
 
-/*PORTADA*/
+/* PORTADA */
 .wrapping-page {
     width: 100%;
     position: relative;
@@ -28,7 +27,7 @@ body {
     color: rgb(199, 175, 131);
     font-family: "Bilbo Swash Caps", cursive;
     font-weight: 500;
-    font-style:normal;
+    font-style: normal;
 }
 
 /* IMAGEN DE PORTADA */
@@ -43,14 +42,14 @@ body {
 /* CONTENEDOR PRINCIPAL */
 #reserve {
     max-width: 80%;
-    margin: 0 auto;
+    margin: 20px auto;
     background: #f6f2e9;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border: 2px solid rgb(241, 226, 197);
     display: flex;
-    justify-content:center;
+    justify-content: center;
     flex-direction: column;
 }
 
@@ -58,12 +57,13 @@ body {
 form {
     display: flex;
     flex-direction: column;
+    gap: 15px;
 }
 
 /* LABELS */
 label {
-    margin-bottom: 5px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 /* INPUT y SELECT */
@@ -72,7 +72,9 @@ select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
 }
 
 /* BOTON DE RESERVA */
@@ -84,6 +86,7 @@ button[type="submit"] {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-family: "Outfit", sans-serif;
 }
 
 button[type="submit"]:hover {
@@ -93,6 +96,8 @@ button[type="submit"]:hover {
 /* LISTA DE RESERVAS */
 #reservations-list {
     margin-top: 20px;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
 }
 
 #reservations-list ul {
@@ -108,6 +113,14 @@ button[type="submit"]:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+}
+
+#reservations-list li:hover {
+    background-color: #f1e9de; /* Cambia el fondo al pasar el cursor */
+    transform: translateY(-2px); /* Le da un pequeño efecto de elevación */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Sombra para el efecto de elevación */
 }
 
 /* BOTON DE ELIMINAR LAS RESERVAS */
@@ -115,10 +128,11 @@ button#delete-button {
     background-color: #c6610e;
     color: white;
     border: none;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-family: "Outfit", sans-serif;
 }
 
 button#delete-button:hover {
@@ -131,12 +145,13 @@ p {
 }
 
 p.error-message {
-    margin-top: 10px;
-    color: #dc3545; /* Color rojo */
-    background-color: #f8d7da; /* Fondo suave */
+    color: #dc3545; /* Rojo */
+    background-color: #f8d7da; /* Fondo rojo claro */
     padding: 10px;
-    border: 1px solid #f5c6cb; /* Borde más oscuro */
-    border-radius: 4px; /* Bordes redondeados */
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
 }
 
 /* ANIMACIONES */
