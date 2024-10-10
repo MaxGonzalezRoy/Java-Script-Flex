@@ -1,24 +1,27 @@
-# Proyecto de Registro de Usuarios
+# Sistema de Reservas de Hotel
 
 ## Descripción
 
-Este proyecto es una implementación de un sistema de registro de usuarios en JavaScript. El código contiene funciones para validar la entrada de datos del usuario y un formulario que recoge y valida la información antes de finalizar el registro. El objetivo principal es garantizar que los datos ingresados sean correctos y completos antes de proceder.
+Este proyecto es una implementación de un sistema de reservas de hotel en JavaScript. Los usuarios pueden seleccionar el tipo de habitación que desean reservar y cancelar la reserva si lo necesitan. El objetivo es ofrecer una experiencia de usuario sencilla y eficiente, permitiendo gestionar las reservas de manera rápida.
 
 ## Funcionalidades
 
-- **Verificación de Correo Electrónico:** Utiliza una expresión regular para validar el formato del correo electrónico ingresado.
-- **Verificación de Teléfono:** Asegura que el número de teléfono contenga solo dígitos.
-- **Verificación de Contraseñas:** Compara dos contraseñas para confirmar que coincidan.
-- **Adaptación de Nombres de Campos:** Convierte los nombres de los campos a un formato más amigable para el usuario.
-- **Formulario de Registro:** Solicita datos del usuario y valida cada campo. Muestra mensajes de alerta si los datos son inválidos o si el registro se cancela.
+- **Selección de Tipo de Habitación:** Los usuarios eligen entre diferentes tipos de habitaciones.
+- **Cancelación de Reservas:** Permite eliminar reservas realizadas anteriormente.
+- **Formulario de Reservas:** Valida los datos ingresados antes de finalizar la reserva.
+- **Notificaciones de Confirmación:** Muestra mensajes según el estado de la reserva.
 
+## Lógica de Reservas
 
-## Consideraciones
+El sistema utiliza JavaScript para gestionar las reservas con las siguientes características clave:
 
-Este proyecto se ha desarrollado teniendo en cuenta el trabajo final, el cual incluirá una sección de registro de usuarios. La implementación actual proporciona una base para esta funcionalidad, la cual se integrará en el proyecto final.
+- **Almacenamiento Local:** Las reservas se guardan en `localStorage`, manteniéndolas entre sesiones.
+- **Validación de Fechas:** Verifica que la fecha de entrada sea anterior a la de salida y que ambas no sean anteriores a la fecha actual.
+- **Interacción Dinámica:** El formulario y la lista de reservas se actualizan en tiempo real sin recargar la página.
+- **Eliminación de Reservas:** Los usuarios pueden eliminar una reserva específica desde la lista.
+- **Formateo de Fechas:** Las fechas se formatean de forma amigable para el usuario.
 
-Para más detalles, puede consultar el código en el [repositorio de GitHub](https://github.com/MaxGonzalezRoy/Pre-entrega-1.git).
-
+Para más detalles, puede consultar el código en el [repositorio de GitHub](https://github.com/MaxGonzalezRoy/Java-Script-Flex.git).
 
 Atentamente,
 
