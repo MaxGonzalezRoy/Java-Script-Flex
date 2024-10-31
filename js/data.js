@@ -1,12 +1,12 @@
 // Main container
 const reserveContainer = document.getElementById('reserve');
 
-// Available room counts
+// Available room counts and prices
 const roomAvailability = {
-    single: { total: 10, reserved: 0 },
-    double: { total: 10, reserved: 0 },
-    suite: { total: 6, reserved: 0 },
-    family: { total: 4, reserved: 0 }
+    base: { total: 10, reserved: 0, price: 144 },   // Precio por noche
+    double: { total: 6, reserved: 0, price: 189 },
+    suite: { total: 4, reserved: 0, price: 214 },
+    family: { total: 4, reserved: 0, price: 286 }  // Family room added and others removed
 };
 
 // Load room availability from localStorage
@@ -118,7 +118,13 @@ function createReservation() {
     }
 
     // Save the reservation
-    reservations.push({ checkInDate: checkInDateTime, checkOutDate: checkOutDateTime, roomType, adults, minors });
+    reservations.push({ 
+        checkInDate: checkInDateTime, 
+        checkOutDate: checkOutDateTime, 
+        roomType, 
+        adults, 
+        minors 
+    });
     saveReservations(reservations);
 
     // Update room availability
@@ -144,7 +150,10 @@ const displayReservations = () => {
     const ul = document.createElement('ul');
     reservations.map((reservation, index) => {
         const li = document.createElement('li');
-        li.textContent = `Reservation: Check-In - ${formatDate(reservation.checkInDate)}, Check-Out - ${formatDate(reservation.checkOutDate)}, Room - ${reservation.roomType.charAt(0).toUpperCase() + reservation.roomType.slice(1)}, Adults: ${reservation.adults}, Minors: ${reservation.minors}`;
+        const nights = calculateNights(reservation.checkInDate, reservation.checkOutDate);
+        const totalPrice = nights * roomAvailability[reservation.roomType].price;
+
+        li.textContent = `Reservation: Check-In - ${formatDate(reservation.checkInDate)}, Check-Out - ${formatDate(reservation.checkOutDate)}, Room - ${reservation.roomType.charAt(0).toUpperCase() + reservation.roomType.slice(1)}, Adults: ${reservation.adults}, Minors: ${reservation.minors}, Total Price: $${totalPrice}`;
         
         const deleteButton = createElement('button', {}, 'Delete');
         deleteButton.addEventListener('click', () => deleteReservation(index, reservation.roomType));
@@ -158,9 +167,12 @@ const displayReservations = () => {
 // Function to display room availability
 function displayRoomAvailability() {
     roomAvailabilityContainer.textContent = '';
-    Object.entries(roomAvailability).forEach(([roomType, { total, reserved }]) => {
-        const availableRooms = total - reserved; // Correct calculation of available rooms
-        const p = createElement('p', {}, `${roomType.charAt(0).toUpperCase() + roomType.slice(1)}: Available - ${availableRooms}, Reserved - ${reserved}`);
+    Object.entries(roomAvailability).forEach(([roomType, { total, reserved, price }]) => {
+        const availableRooms = total - reserved;
+        const p = createElement(
+            'p', {}, 
+            `${roomType.charAt(0).toUpperCase() + roomType.slice(1)}: Available - ${availableRooms}, Reserved - ${reserved}, Price: $${price}`
+        );
         roomAvailabilityContainer.appendChild(p);
     });
 }
@@ -172,6 +184,14 @@ function updateRoomTypeOptions() {
         const availableRooms = total - reserved;
         selectRoomType.appendChild(createElement('option', { value: roomType }, `${roomType.charAt(0).toUpperCase() + roomType.slice(1)} - Available: ${availableRooms}`));
     });
+}
+
+// Function to calculate nights between two dates
+function calculateNights(checkInDate, checkOutDate) {
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const timeDifference = checkOut - checkIn;
+    return timeDifference / (1000 * 3600 * 24); // Convert milliseconds to days
 }
 
 // Function to delete a reservation
