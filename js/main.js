@@ -1,6 +1,23 @@
 // Main container
 const reserveContainer = document.getElementById('reserve');
 
+// Available room counts
+const roomAvailability = {
+    single: { total: 10, reserved: 0 },
+    double: { total: 10, reserved: 0 },
+    suite: { total: 6, reserved: 0 },
+    family: { total: 4, reserved: 0 }
+};
+
+// Load room availability from localStorage
+const loadRoomAvailability = () => {
+    const storedAvailability = JSON.parse(localStorage.getItem('roomAvailability'));
+    if (storedAvailability) {
+        Object.assign(roomAvailability, storedAvailability);
+    }
+};
+loadRoomAvailability();
+
 // Create a constant with attributes
 const createElement = (tag, attributes = {}, text = '') => {
     const element = document.createElement(tag);
@@ -12,21 +29,23 @@ const createElement = (tag, attributes = {}, text = '') => {
 // Storage functions
 const getReservations = () => JSON.parse(localStorage.getItem('reservations')) || [];
 const saveReservations = (reservations) => localStorage.setItem('reservations', JSON.stringify(reservations));
+const saveRoomAvailability = () => localStorage.setItem('roomAvailability', JSON.stringify(roomAvailability));
 
 // Create form and its elements
 const form = createElement('form', { id: 'reservation-form' });
-const labelCheckIn = createElement('label', { for: 'check-in' }, 'Check-In Date');
-const inputCheckIn = createElement('input', { type: 'date', id: 'check-in', required: true });
-const labelCheckOut = createElement('label', { for: 'check-out' }, 'Check-Out Date');
-const inputCheckOut = createElement('input', { type: 'date', id: 'check-out', required: true });
-const labelRoomType = createElement('label', { for: 'room-type' }, 'Room Type');
 
-// Room type options
-const roomTypes = ['single', 'double', 'suite'];
+// Create Check-In Date Input
+const labelCheckIn = createElement('label', { for: 'check-in-date' }, 'Check-In Date');
+const inputCheckInDate = createElement('input', { type: 'date', id: 'check-in-date', required: true });
+
+// Create Check-Out Date Input
+const labelCheckOut = createElement('label', { for: 'check-out-date' }, 'Check-Out Date');
+const inputCheckOutDate = createElement('input', { type: 'date', id: 'check-out-date', required: true });
+
+// Create Room Type Selector
+const labelRoomType = createElement('label', { for: 'room-type' }, 'Room Type');
 const selectRoomType = createElement('select', { id: 'room-type' });
-roomTypes.map(option => {
-    selectRoomType.appendChild(createElement('option', { value: option }, option.charAt(0).toUpperCase() + option.slice(1)));
-});
+updateRoomTypeOptions();
 
 // Add fields for adults and minors
 const labelAdults = createElement('label', { for: 'adults' }, 'Number of adults (+18):');
@@ -39,8 +58,8 @@ const buttonSubmit = createElement('button', { type: 'submit' }, 'Book');
 
 // Add elements to the form
 form.append(
-    labelCheckIn, inputCheckIn,
-    labelCheckOut, inputCheckOut,
+    labelCheckIn, inputCheckInDate,
+    labelCheckOut, inputCheckOutDate,
     labelRoomType, selectRoomType,
     labelAdults, inputAdults,
     labelMinors, inputMinors,
@@ -52,6 +71,11 @@ reserveContainer.appendChild(form);
 const reservationList = createElement('div', { id: 'reservations-list' });
 reserveContainer.appendChild(reservationList);
 
+// Container to display room availability
+const roomAvailabilityContainer = createElement('div', { id: 'room-availability' });
+reserveContainer.appendChild(roomAvailabilityContainer);
+displayRoomAvailability();
+
 // Reload form on submit
 form.addEventListener('submit', function(event) {
     event.preventDefault();
@@ -60,22 +84,50 @@ form.addEventListener('submit', function(event) {
 
 // Function to create a new reservation
 function createReservation() {
-    const checkInDate = inputCheckIn.value;
-    const checkOutDate = inputCheckOut.value;
+    const checkInDate = inputCheckInDate.value;
+    const checkOutDate = inputCheckOutDate.value;
     const roomType = selectRoomType.value;
     const adults = parseInt(inputAdults.value, 10);
     const minors = parseInt(inputMinors.value, 10);
 
     // Validate check-in and check-out dates
-    if (new Date(checkInDate) >= new Date(checkOutDate)) {
-        showErrorMessage('Check-in date must be earlier than the check-out date.');
+    const checkInDateTime = new Date(checkInDate);
+    const checkOutDateTime = new Date(checkOutDate);
+
+    if (checkInDateTime >= checkOutDateTime) {
+        showErrorMessage('Check-in date must be earlier than check-out date.');
         return;
     }
 
+    // Check for overlapping reservations
     const reservations = getReservations();
-    reservations.push({ checkInDate, checkOutDate, roomType, adults, minors });
+    const isOverlapping = reservations.some(reservation => {
+        return reservation.roomType === roomType &&
+            ((checkInDateTime < reservation.checkOutDate && checkOutDateTime > reservation.checkInDate));
+    });
+
+    if (isOverlapping) {
+        showErrorMessage(`The selected room is already reserved for the specified dates.`);
+        return;
+    }
+
+    // Validate room availability
+    if (roomAvailability[roomType].reserved >= roomAvailability[roomType].total) {
+        showErrorMessage(`No more ${roomType} rooms available.`);
+        return;
+    }
+
+    // Save the reservation
+    reservations.push({ checkInDate: checkInDateTime, checkOutDate: checkOutDateTime, roomType, adults, minors });
     saveReservations(reservations);
+
+    // Update room availability
+    roomAvailability[roomType].reserved += 1;
+    saveRoomAvailability();
+
     displayReservations();
+    displayRoomAvailability();
+    updateRoomTypeOptions();
     form.reset();
 }
 
@@ -95,7 +147,7 @@ const displayReservations = () => {
         li.textContent = `Reservation: Check-In - ${formatDate(reservation.checkInDate)}, Check-Out - ${formatDate(reservation.checkOutDate)}, Room - ${reservation.roomType.charAt(0).toUpperCase() + reservation.roomType.slice(1)}, Adults: ${reservation.adults}, Minors: ${reservation.minors}`;
         
         const deleteButton = createElement('button', {}, 'Delete');
-        deleteButton.addEventListener('click', () => deleteReservation(index));
+        deleteButton.addEventListener('click', () => deleteReservation(index, reservation.roomType));
         li.appendChild(deleteButton);
         ul.appendChild(li);
     });
@@ -103,12 +155,41 @@ const displayReservations = () => {
     reservationList.appendChild(ul);
 };
 
+// Function to display room availability
+function displayRoomAvailability() {
+    roomAvailabilityContainer.textContent = '';
+    Object.entries(roomAvailability).forEach(([roomType, { total, reserved }]) => {
+        const availableRooms = total - reserved; // Correct calculation of available rooms
+        const p = createElement('p', {}, `${roomType.charAt(0).toUpperCase() + roomType.slice(1)}: Available - ${availableRooms}, Reserved - ${reserved}`);
+        roomAvailabilityContainer.appendChild(p);
+    });
+}
+
+// Function to update room type options based on availability
+function updateRoomTypeOptions() {
+    selectRoomType.innerHTML = ''; // Clear existing options
+    Object.entries(roomAvailability).forEach(([roomType, { total, reserved }]) => {
+        const availableRooms = total - reserved;
+        selectRoomType.appendChild(createElement('option', { value: roomType }, `${roomType.charAt(0).toUpperCase() + roomType.slice(1)} - Available: ${availableRooms}`));
+    });
+}
+
 // Function to delete a reservation
-function deleteReservation(index) {
+function deleteReservation(index, roomType) {
     const reservations = getReservations();
+    const reservationToDelete = reservations[index];
+
+    // Update room availability based on the deleted reservation
+    roomAvailability[roomType].reserved -= 1;
+    saveRoomAvailability();
+
+    // Remove the reservation from the list
     reservations.splice(index, 1);
     saveReservations(reservations);
+
     displayReservations();
+    displayRoomAvailability();
+    updateRoomTypeOptions();
 }
 
 // Show reservations when page loads
@@ -116,16 +197,16 @@ displayReservations();
 
 // Validation to ensure dates are not earlier than today
 const today = new Date().toISOString().split('T')[0];
-inputCheckIn.setAttribute('min', today);
-inputCheckOut.setAttribute('min', today);
+inputCheckInDate.setAttribute('min', today);
+inputCheckOutDate.setAttribute('min', today);
 
 // Helper function to format the date
 function formatDate(isoDate) {
-    const [year, month, day] = isoDate.split('-');
-    return `${day}/${month}/${year}`;
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(isoDate).toLocaleDateString('en-US', options);
 }
 
-// Optional error handling function
+// Function to show error messages
 function showErrorMessage(message) {
-    alert(message); // Can replace with a custom error display if preferred
+    alert(message);
 }
