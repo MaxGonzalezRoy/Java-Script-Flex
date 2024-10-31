@@ -1,7 +1,7 @@
-// Contenedor principal
-const reserve = document.getElementById('reserve');
+// Main container
+const reserveContainer = document.getElementById('reserve');
 
-// Creamos una constante con atributos
+// Create a constant with attributes
 const createElement = (tag, attributes = {}, text = '') => {
     const element = document.createElement(tag);
     Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
@@ -9,75 +9,93 @@ const createElement = (tag, attributes = {}, text = '') => {
     return element;
 };
 
-// Funciones de almacenamiento
-const getReservas = () => JSON.parse(localStorage.getItem('reservas')) || [];
-const saveReservas = (reservas) => localStorage.setItem('reservas', JSON.stringify(reservas));
+// Storage functions
+const getReservations = () => JSON.parse(localStorage.getItem('reservations')) || [];
+const saveReservations = (reservations) => localStorage.setItem('reservations', JSON.stringify(reservations));
 
-// Creación del formulario y sus elementos
+// Create form and its elements
 const form = createElement('form', { id: 'reservation-form' });
-const labelCheckIn = createElement('label', { for: 'check-in' }, 'Fecha de Entrada');
+const labelCheckIn = createElement('label', { for: 'check-in' }, 'Check-In Date');
 const inputCheckIn = createElement('input', { type: 'date', id: 'check-in', required: true });
-const labelCheckOut = createElement('label', { for: 'check-out' }, 'Fecha de Salida');
+const labelCheckOut = createElement('label', { for: 'check-out' }, 'Check-Out Date');
 const inputCheckOut = createElement('input', { type: 'date', id: 'check-out', required: true });
-const labelRoomType = createElement('label', { for: 'room-type' }, 'Tipo de Habitación');
+const labelRoomType = createElement('label', { for: 'room-type' }, 'Room Type');
 
-// Usando map para crear las opciones del select
-const roomTypes = ['individual', 'doble', 'suite'];
+// Room type options
+const roomTypes = ['single', 'double', 'suite'];
 const selectRoomType = createElement('select', { id: 'room-type' });
 roomTypes.map(option => {
     selectRoomType.appendChild(createElement('option', { value: option }, option.charAt(0).toUpperCase() + option.slice(1)));
 });
-const buttonSubmit = createElement('button', { type: 'submit' }, 'Reservar');
 
-// Añadimos los elementos al formulario
-form.append(labelCheckIn, inputCheckIn, labelCheckOut, inputCheckOut, labelRoomType, selectRoomType, buttonSubmit);
-reserve.appendChild(form);
+// Add fields for adults and minors
+const labelAdults = createElement('label', { for: 'adults' }, 'Number of adults (+18):');
+const inputAdults = createElement('input', { type: 'number', id: 'adults', min: '1', required: true });
 
-// Contenedor para mostrar las reservas
+const labelMinors = createElement('label', { for: 'minors' }, 'Number of minors:');
+const inputMinors = createElement('input', { type: 'number', id: 'minors', min: '0' });
+
+const buttonSubmit = createElement('button', { type: 'submit' }, 'Book');
+
+// Add elements to the form
+form.append(
+    labelCheckIn, inputCheckIn,
+    labelCheckOut, inputCheckOut,
+    labelRoomType, selectRoomType,
+    labelAdults, inputAdults,
+    labelMinors, inputMinors,
+    buttonSubmit
+);
+reserveContainer.appendChild(form);
+
+// Container to display reservations
 const reservationList = createElement('div', { id: 'reservations-list' });
-reserve.appendChild(reservationList);
+reserveContainer.appendChild(reservationList);
 
-// Recarga el formulario
+// Reload form on submit
 form.addEventListener('submit', function(event) {
     event.preventDefault();
-    crearReserva();
+    createReservation();
 });
 
-// Función para crear una nueva reserva
-function crearReserva() {
+// Function to create a new reservation
+function createReservation() {
     const checkInDate = inputCheckIn.value;
     const checkOutDate = inputCheckOut.value;
     const roomType = selectRoomType.value;
+    const adults = parseInt(inputAdults.value, 10);
+    const minors = parseInt(inputMinors.value, 10);
 
+    // Validate check-in and check-out dates
     if (new Date(checkInDate) >= new Date(checkOutDate)) {
-        mostrarMensajeError('La fecha de entrada debe ser anterior a la de salida.');
+        showErrorMessage('Check-in date must be earlier than the check-out date.');
         return;
     }
 
-    const reservas = getReservas();
-    reservas.push({ checkInDate, checkOutDate, roomType });
-    saveReservas(reservas);
-    mostrarReservas();
+    const reservations = getReservations();
+    reservations.push({ checkInDate, checkOutDate, roomType, adults, minors });
+    saveReservations(reservations);
+    displayReservations();
     form.reset();
 }
 
-// Función para mostrar las reservas usando map para formatearlas
-const mostrarReservas = () => {
-    const reservas = getReservas();
+// Function to display reservations
+const displayReservations = () => {
+    const reservations = getReservations();
     reservationList.textContent = '';
 
-    if (reservas.length === 0) {
-        reservationList.textContent = 'No hay reservas realizadas.';
+    if (reservations.length === 0) {
+        reservationList.textContent = 'No reservations made.';
         return;
     }
 
     const ul = document.createElement('ul');
-    reservas.map((reserva, index) => {
+    reservations.map((reservation, index) => {
         const li = document.createElement('li');
-        li.textContent = `Reserva: Entrada - ${formatearFecha(reserva.checkInDate)}, Salida - ${formatearFecha(reserva.checkOutDate)}, Habitación - ${reserva.roomType.charAt(0).toUpperCase() + reserva.roomType.slice(1)}`;
+        li.textContent = `Reservation: Check-In - ${formatDate(reservation.checkInDate)}, Check-Out - ${formatDate(reservation.checkOutDate)}, Room - ${reservation.roomType.charAt(0).toUpperCase() + reservation.roomType.slice(1)}, Adults: ${reservation.adults}, Minors: ${reservation.minors}`;
         
-        const deleteButton = createElement('button', {}, 'Eliminar');
-        deleteButton.addEventListener('click', () => eliminarReserva(index));
+        const deleteButton = createElement('button', {}, 'Delete');
+        deleteButton.addEventListener('click', () => deleteReservation(index));
         li.appendChild(deleteButton);
         ul.appendChild(li);
     });
@@ -85,24 +103,29 @@ const mostrarReservas = () => {
     reservationList.appendChild(ul);
 };
 
-// Función para eliminar la reserva
-function eliminarReserva(index) {
-    const reservas = getReservas();
-    reservas.splice(index, 1);
-    saveReservas(reservas);
-    mostrarReservas();
+// Function to delete a reservation
+function deleteReservation(index) {
+    const reservations = getReservations();
+    reservations.splice(index, 1);
+    saveReservations(reservations);
+    displayReservations();
 }
 
-// Mostrar reservas al cargar la página
-mostrarReservas();
+// Show reservations when page loads
+displayReservations();
 
-// Validación para que las fechas no sean anteriores a la fecha actual
+// Validation to ensure dates are not earlier than today
 const today = new Date().toISOString().split('T')[0];
 inputCheckIn.setAttribute('min', today);
 inputCheckOut.setAttribute('min', today);
 
-// Función auxiliar para formatear la fecha
-function formatearFecha(fechaISO) {
-    const [year, month, day] = fechaISO.split('-');
+// Helper function to format the date
+function formatDate(isoDate) {
+    const [year, month, day] = isoDate.split('-');
     return `${day}/${month}/${year}`;
+}
+
+// Optional error handling function
+function showErrorMessage(message) {
+    alert(message); // Can replace with a custom error display if preferred
 }
