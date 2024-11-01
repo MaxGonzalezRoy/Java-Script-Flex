@@ -1,8 +1,21 @@
-// Función para mostrar las reservas
+function loadReservations() {
+    return JSON.parse(localStorage.getItem("reservations")) || [];
+}
+
+function saveReservations(reservations) {
+    localStorage.setItem("reservations", JSON.stringify(reservations));
+}
+
 function displayReservations() {
-    const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+    const reservations = loadReservations();
+    
     const reservationsListDiv = document.getElementById("reservations-list");
-    reservationsListDiv.innerHTML = ""; // Limpia la lista antes de mostrar
+    if (!reservationsListDiv) {
+        console.error("El elemento 'reservations-list' no se encontró en el DOM.");
+        return;
+    }
+
+    reservationsListDiv.innerHTML = "";
     reservations.forEach((reservation, index) => {
         const reservationItem = document.createElement("div");
         reservationItem.innerHTML = `
@@ -18,17 +31,4 @@ function displayReservations() {
     });
 }
 
-// Función para eliminar una reserva
-function deleteReservation(index) {
-    const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
-    if (reservations[index]) {
-        reservations.splice(index, 1); // Elimina la reserva seleccionada
-        localStorage.setItem("reservations", JSON.stringify(reservations));
-        displayReservations(); // Actualiza la lista de reservas
-    } else {
-        console.error("No se encontró la reserva para eliminar.");
-    }
-}
-
-// Llama a esta función cuando se cargue el documento
 document.addEventListener("DOMContentLoaded", displayReservations);
