@@ -12,11 +12,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Bilbo+Swash+Caps&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     <!-- JS -->
-    <script defer src="./js/main.js"></script>
-    <script defer src="./js/storage.js"></script>
     <script defer src="./js/api.js"></script>
-    <script defer src="./js/reservations.js"></script>
     <script defer src="./js/display.js"></script>
+    <script defer src="./js/main.js"></script>
+    <script defer src="./js/reservations.js"></script>
+    <script defer src="./js/storage.js"></script>
 </head>
 <body>
     <div class="wrapping-page">
@@ -26,9 +26,47 @@
         <img src="img/mountains.jpg" alt="Portada de montañas" class="portada">
 
         <!-- Contenedor de Reservas -->
-        <main id="reserve"></main>
-        <div id="room-availability"></div>
-        <div id="reservations-list"></div>
+        <main id="reserve">
+            <h2>Formulario de Reserva</h2>
+            <form id="reservation-form" class="horizontal-form">
+                <div class="form-group">
+                    <label for="check-in-date">Fecha de entrada:</label>
+                    <input type="date" id="check-in-date" name="check-in-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="check-out-date">Fecha de salida:</label>
+                    <input type="date" id="check-out-date" name="check-out-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="room-type">Tipo de habitación:</label>
+                    <select id="room-type" name="room-type">
+                        <option value="base">Base</option>
+                        <option value="double">Double</option>
+                        <option value="suite">Suite</option>
+                        <option value="family">Family</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="adults">Adultos:</label>
+                    <input type="number" id="adults" name="adults" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="minors">Menores:</label>
+                    <input type="number" id="minors" name="minors" min="0">
+                </div>
+                <button type="submit">Guardar Reserva</button>
+            </form>
+        </main>
+        
+        <!-- Sección de Disponibilidad -->
+        <div id="room-availability">
+            <h2>Disponibilidad de Habitaciones</h2>
+            <div id="availability-list"></div>
+        </div>
+
+        <div id="reservations-list">
+            <h2>Reservas Realizadas</h2>
+        </div>
     </div>
 </body>
 </html>

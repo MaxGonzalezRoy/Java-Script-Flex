@@ -1,44 +1,29 @@
-let reservations = []; // Array para almacenar las reservas en memoria
-let roomAvailability = {}; // Objeto para la disponibilidad de habitaciones
-
-function saveRoomAvailability(availability) {
-    roomAvailability = availability;
-    localStorage.setItem('roomAvailability', JSON.stringify(roomAvailability));
-}
-
-function loadRoomAvailability() {
-    const storedAvailability = localStorage.getItem('roomAvailability');
-    if (storedAvailability) {
-        roomAvailability = JSON.parse(storedAvailability);
+// Almacena las reservas en localStorage y las muestra en el DOM
+function displayReservations() {
+    const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+    
+    // Verifica que el elemento esté definido
+    const reservationsListDiv = document.getElementById("reservations-list");
+    if (!reservationsListDiv) {
+        console.error("El elemento 'reservations-list' no se encontró en el DOM.");
+        return;
     }
-    return roomAvailability;
+
+    reservationsListDiv.innerHTML = ""; // Limpia la lista antes de mostrar
+    reservations.forEach((reservation, index) => {
+        const reservationItem = document.createElement("div");
+        reservationItem.innerHTML = `
+            <p>Reserva #${index + 1}</p>
+            <p>Tipo: ${reservation.roomType}</p>
+            <p>Fecha de entrada: ${reservation.checkIn}</p>
+            <p>Fecha de salida: ${reservation.checkOut}</p>
+            <p>Adultos: ${reservation.adults}, Menores: ${reservation.minors}</p>
+            <button onclick="editReservation(${index})">Modificar</button>
+            <button onclick="deleteReservation(${index})">Eliminar</button>
+        `;
+        reservationsListDiv.appendChild(reservationItem);
+    });
 }
 
-function saveReservation(reservation) {
-    reservations.push(reservation);
-    saveReservationsToStorage();
-}
-
-function getReservations() {
-    return reservations;
-}
-
-function loadReservationsFromStorage() {
-    const storedReservations = JSON.parse(localStorage.getItem('reservations'));
-    if (storedReservations) {
-        reservations = storedReservations;
-    }
-}
-
-function saveReservationsToStorage() {
-    localStorage.setItem('reservations', JSON.stringify(reservations));
-}
-
-// Exporta las funciones de forma global
-window.saveRoomAvailability = saveRoomAvailability;
-window.loadRoomAvailability = loadRoomAvailability;
-window.saveReservation = saveReservation;
-window.getReservations = getReservations;
-window.loadReservationsFromStorage = loadReservationsFromStorage;
-window.saveReservationsToStorage = saveReservationsToStorage;
-
+// Llama a esta función cuando se cargue el documento
+document.addEventListener("DOMContentLoaded", displayReservations);

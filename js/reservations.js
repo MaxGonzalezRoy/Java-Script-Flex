@@ -1,26 +1,34 @@
-function createReservation(roomAvailability, checkInDate, checkOutDate, roomType, adults, minors) {
-    // Lógica para crear una reserva
-    if (roomAvailability[roomType].reserved >= roomAvailability[roomType].total) {
-        throw new Error('Selected room is already reserved.');
-    }
-    
-    // Crea el objeto de reserva
-    const reservation = {
-        checkInDate,
-        checkOutDate,
-        roomType,
-        adults,
-        minors
-    };
-
-    // Actualiza la disponibilidad de la habitación
-    roomAvailability[roomType].reserved++;
-    saveRoomAvailability(roomAvailability); // Asegúrate de guardar la disponibilidad actualizada
-
-    // Almacena la reserva en localStorage
-    const reservations = getReservations(); // Obtiene las reservas actuales
-    reservations.push(reservation); // Agrega la nueva reserva
-    localStorage.setItem('reservations', JSON.stringify(reservations)); // Guarda las reservas actualizadas en localStorage
-
-    return reservation; // Devolver la reserva creada
+// Función para mostrar las reservas
+function displayReservations() {
+    const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+    const reservationsListDiv = document.getElementById("reservations-list");
+    reservationsListDiv.innerHTML = ""; // Limpia la lista antes de mostrar
+    reservations.forEach((reservation, index) => {
+        const reservationItem = document.createElement("div");
+        reservationItem.innerHTML = `
+            <p>Reserva #${index + 1}</p>
+            <p>Tipo: ${reservation.roomType}</p>
+            <p>Fecha de entrada: ${reservation.checkIn}</p>
+            <p>Fecha de salida: ${reservation.checkOut}</p>
+            <p>Adultos: ${reservation.adults}, Menores: ${reservation.minors}</p>
+            <button onclick="editReservation(${index})">Modificar</button>
+            <button onclick="deleteReservation(${index})">Eliminar</button>
+        `;
+        reservationsListDiv.appendChild(reservationItem);
+    });
 }
+
+// Función para eliminar una reserva
+function deleteReservation(index) {
+    const reservations = JSON.parse(localStorage.getItem("reservations")) || [];
+    if (reservations[index]) {
+        reservations.splice(index, 1); // Elimina la reserva seleccionada
+        localStorage.setItem("reservations", JSON.stringify(reservations));
+        displayReservations(); // Actualiza la lista de reservas
+    } else {
+        console.error("No se encontró la reserva para eliminar.");
+    }
+}
+
+// Llama a esta función cuando se cargue el documento
+document.addEventListener("DOMContentLoaded", displayReservations);
