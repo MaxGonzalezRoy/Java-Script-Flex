@@ -1,11 +1,11 @@
-async function fetchData() {
+async function loadRoomData() {
     try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts"); // URL de ejemplo
+        const response = await fetch('../data/rooms.json'); // Asegúrate de que la ruta es correcta
+        if (!response.ok) throw new Error('Error loading room data');
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error("Error al obtener los datos:", error);
-    } finally {
-        console.log("Petición finalizada");
+        console.error("Failed to load room data:", error);
+        return null;
     }
 }

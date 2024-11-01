@@ -1,0 +1,22 @@
+{
+    "base": {
+        "total": 10,
+        "reserved": 0,
+        "price": 144
+    },
+    "double": {
+        "total": 6,
+        "reserved": 0,
+        "price": 189
+    },
+    "suite": {
+        "total": 4,
+        "reserved": 0,
+        "price": 214
+    },
+    "family": {
+        "total": 4,
+        "reserved": 0,
+        "price": 286
+    }
+}
