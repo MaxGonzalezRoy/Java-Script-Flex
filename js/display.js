@@ -86,7 +86,7 @@ function handleEditFormSubmit(event) {
 
     const roomAvailability = loadRoomAvailability();
     if (!roomAvailability[roomType] || roomAvailability[roomType].reserved >= roomAvailability[roomType].total) {
-        Swal.fire("Sin Disponibilidad", "No hay habitaciones disponibles para el tipo seleccionado.", "error");
+        Swal.fire("Sin Disponibilidad", "No hay habitaciones disponibles para el tipo de habitacion seleccionada. Por favor elija otra habitacion.", "error");
         return;
     }
 

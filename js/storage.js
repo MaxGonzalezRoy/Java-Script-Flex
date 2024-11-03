@@ -30,7 +30,14 @@ export function reduceRoomAvailability(roomType) {
         availability[roomType].reserved += 1;
         saveRoomAvailability(availability);
     } else {
-        console.error("No hay habitaciones disponibles para el tipo de habitación seleccionado.");
+        Toastify({
+            text: "No hay habitaciones disponibles para el tipo de habitación seleccionado.",
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "red",
+            close: true
+        }).showToast();
     }
 }
 

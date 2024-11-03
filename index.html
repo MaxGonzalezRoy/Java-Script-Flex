@@ -13,8 +13,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.3/luxon.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <!-- JavaScript -->
     <script type="module" defer src="./lib/lib.js"></script> 
     <script type="module" defer src="./js/storage.js"></script>
@@ -28,11 +30,9 @@
         <header>
             <h1 class="roy">Hotel Roy - Resort & SPA</h1>
         </header>
-        
         <div class="background-overlay">
             <img src="img/mountains.jpg" alt="Portada de montañas" class="portada">
         </div>
-
         <main id="reserve" class="form-container">
             <h2>Formulario de Reserva</h2>
             <form id="reservation-form" class="horizontal-form">
@@ -64,14 +64,11 @@
                 <button type="submit" id="submitReservation" class="search-button">Realizar Reserva</button>
             </form>
         </main>
-
         <div id="error-message" class="error-message" style="display:none;"></div>
-        
         <div id="room-availability">
             <h2>Disponibilidad de Habitaciones</h2>
             <div id="availability-list"></div>
         </div>
-
         <div id="reservations-list">
             <h2>Reservas Realizadas</h2>
         </div>

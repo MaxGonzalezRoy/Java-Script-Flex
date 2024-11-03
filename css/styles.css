@@ -21,12 +21,33 @@ body {
 }
 
 header {
-    color: white;
-    padding: 15px;
+    background: linear-gradient(135deg, #b3e5fc, #e1f5fe);
+    color: #003366;
     text-align: center;
+    padding: 20px;
+    border: 2px solid transparent;
+    border-bottom-color: #81d4fa;
+    transition: border-color 0.3s ease;
+}
+
+header:hover {
+    border-top-color: #81d4fa;
+    border-left-color: #81d4fa;
+    border-right-color: #81d4fa;
+}
+
+header h1 {
     font-family: 'Bilbo Swash Caps', cursive;
     font-size: 2.5em;
-    background: linear-gradient(45deg, #0071c2, #2c3e50);
+    font-weight: bold;
+    color: #01579b;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+header h1:hover {
+    color: #0288d1;
+    transform: scale(1.05);
 }
 
 .wrapping-page {
@@ -37,13 +58,35 @@ header {
 
 .background-overlay {
     position: relative;
+    display: inline-block;
+    padding: 5px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #b3e5fc, #e1f5fe);
+}
+
+.background-overlay::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: -1;
+    background: linear-gradient(135deg, rgba(179, 229, 252, 0.5), rgba(225, 245, 254, 0));
+    border-radius: 15px; /* Bordes redondeados */
+    box-shadow: 0 0 15px rgba(179, 229, 252, 0.7);
 }
 
 .portada {
+    display: block;
     width: 100%;
-    height: auto;
-    opacity: 0.8;
-    filter: brightness(0.7);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.background-overlay:hover .portada {
+    transform: scale(1.02);
 }
 
 button, .search-button {

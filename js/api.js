@@ -13,7 +13,12 @@ export async function loadRoomData() {
             maxOccupancy: key === 'base' ? 2 : key === 'double' ? 4 : key === 'suite' ? 2 : 4
         }));
     } catch (error) {
-        console.error("Failed to load room data:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al cargar datos',
+            text: 'No se pudo cargar la información de habitaciones. Por favor, inténtalo de nuevo más tarde.',
+            confirmButtonText: 'Aceptar'
+        });
         return null;
     }
 }

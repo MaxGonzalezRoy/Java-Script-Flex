@@ -46,7 +46,6 @@ function openEditReservationModal(index) {
         return;
     }
 
-    // Asignar valores si los elementos existen
     checkInInput.value = reservation.checkInDate;
     checkOutInput.value = reservation.checkOutDate;
     roomTypeInput.value = reservation.roomType;
