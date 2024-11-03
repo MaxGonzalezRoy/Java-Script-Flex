@@ -2,21 +2,25 @@
     "base": {
         "total": 10,
         "reserved": 0,
-        "price": 144
+        "price": 50400,
+        "description": "Habitación básica, ideal para una o dos personas."
     },
     "double": {
         "total": 6,
         "reserved": 0,
-        "price": 189
+        "price": 66150,
+        "description": "Habitación doble, perfecta para parejas o amigos."
     },
     "suite": {
         "total": 4,
         "reserved": 0,
-        "price": 214
+        "price": 74900,
+        "description": "Suite espaciosa, ideal para una estancia de lujo."
     },
     "family": {
         "total": 4,
         "reserved": 0,
-        "price": 286
+        "price": 100100,
+        "description": "Habitación familiar, adecuada para grupos o familias."
     }
 }
