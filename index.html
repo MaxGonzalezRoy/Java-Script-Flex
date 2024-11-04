@@ -37,6 +37,14 @@
             <h2>Formulario de Reserva</h2>
             <form id="reservation-form" class="horizontal-form">
                 <div class="form-group">
+                    <label for="first-name">Nombre</label>
+                    <input type="text" id="first-name" name="first-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Apellido</label>
+                    <input type="text" id="last-name" name="last-name" required>
+                </div>
+                <div class="form-group">
                     <label for="check-in-date">Fecha de entrada</label>
                     <input type="date" id="check-in-date" name="check-in-date" required>
                 </div>
@@ -78,6 +86,14 @@
                 <h3>Modificar Reserva</h3>
                 <form id="edit-reservation-form">
                     <div class="form-group">
+                        <label for="edit-first-name">Nombre</label>
+                        <input type="text" id="edit-first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-last-name">Apellido</label>
+                        <input type="text" id="edit-last-name" required>
+                    </div>
+                    <div class="form-group">
                         <label for="edit-check-in-date">Fecha de entrada</label>
                         <input type="date" id="edit-check-in-date" required>
                     </div>
@@ -102,8 +118,8 @@
                         <label for="edit-minors">Menores</label>
                         <input type="number" id="edit-minors" min="0">
                     </div>
-                        <button type="submit" class="reserve-button">Guardar Cambios</button>
-                        <button type="button" class="reserve-button" onclick="closeEditReservationModal()">Cancelar</button>
+                    <button type="submit" class="reserve-button">Guardar Cambios</button>
+                    <button type="button" class="reserve-button" onclick="closeEditReservationModal()">Cancelar</button>
                 </form>
             </div>
         </div>

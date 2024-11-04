@@ -18,7 +18,8 @@ export function displayReservations() {
         const reservationDiv = document.createElement('div');
         reservationDiv.className = 'reservation-item';
         reservationDiv.innerHTML = `
-            <p><strong>Fecha de entrada:</strong> ${reservation.checkInDate} - 
+            <p><strong>Nombre:</strong> ${reservation.firstName} ${reservation.lastName} - 
+            <strong>Fecha de entrada:</strong> ${reservation.checkInDate} - 
             <strong>Fecha de salida:</strong> ${reservation.checkOutDate} - 
             <strong>Tipo de habitación:</strong> ${capitalizeFirstLetter(reservation.roomType)} - 
             <strong>Adultos:</strong> ${reservation.adults} - 
@@ -35,24 +36,15 @@ function openEditReservationModal(index) {
     const reservations = loadReservations();
     const reservation = reservations[index];
 
-    const checkInInput = document.getElementById('edit-check-in-date');
-    const checkOutInput = document.getElementById('edit-check-out-date');
-    const roomTypeInput = document.getElementById('edit-room-type');
-    const adultsInput = document.getElementById('edit-adults');
-    const minorsInput = document.getElementById('edit-minors');
+    document.getElementById('edit-first-name').value = reservation.firstName;
+    document.getElementById('edit-last-name').value = reservation.lastName;
 
-    if (!checkInInput || !checkOutInput || !roomTypeInput || !adultsInput || !minorsInput) {
-        console.error("Uno o más elementos del formulario de edición no se encontraron en el DOM.");
-        return;
-    }
+    document.getElementById('edit-check-in-date').value = reservation.checkInDate;
+    document.getElementById('edit-check-out-date').value = reservation.checkOutDate;
+    document.getElementById('edit-room-type').value = reservation.roomType;
+    document.getElementById('edit-adults').value = reservation.adults;
+    document.getElementById('edit-minors').value = reservation.minors;
 
-    checkInInput.value = reservation.checkInDate;
-    checkOutInput.value = reservation.checkOutDate;
-    roomTypeInput.value = reservation.roomType;
-    adultsInput.value = reservation.adults;
-    minorsInput.value = reservation.minors;
-
-    // Mostrar el modal
     const editModal = document.getElementById('edit-reservation-modal');
     editModal.classList.add('show');
 }
@@ -66,6 +58,9 @@ function closeEditReservationModal() {
 
 function handleEditFormSubmit(event) {
     event.preventDefault();
+
+    const firstName = document.getElementById('edit-first-name').value;
+    const lastName = document.getElementById('edit-last-name').value;
 
     const checkInDate = document.getElementById('edit-check-in-date').value;
     const checkOutDate = document.getElementById('edit-check-out-date').value;
@@ -83,24 +78,24 @@ function handleEditFormSubmit(event) {
     }
 
     if (checkIn < today) {
-        Swal.fire("Fecha Incorrecta", "La fecha de ingreso no puede ser posterior al dia de la fecha.", "error");
+        Swal.fire("Fecha Incorrecta", "La fecha de entrada no puede ser en el pasado.", "error");
         return;
     }
 
     if (checkIn >= checkOut) {
-        Swal.fire("Error de Fechas", "La fecha de salida debe ser posterior a la fecha de ingreso.", "error");
+        Swal.fire("Error de Fechas", "La fecha de salida debe ser posterior a la fecha de entrada.", "error");
         return;
     }
 
     const guestValidation = validateGuests(roomType, adults, minors);
     if (!guestValidation.isValid) {
-        Swal.fire("Capacidad de personas por habitacion excedida", guestValidation.message, "error");
+        Swal.fire("Capacidad Excedida", guestValidation.message, "error");
         return;
     }
 
     const roomAvailability = loadRoomAvailability();
     if (!roomAvailability[roomType] || roomAvailability[roomType].reserved >= roomAvailability[roomType].total) {
-        Swal.fire("Sin Disponibilidad", "No hay habitaciones disponibles para el tipo seleccionado. Por favor elija otra habitacion.", "error");
+        Swal.fire("Sin Disponibilidad", "No hay habitaciones disponibles para el tipo de habitación seleccionada. Por favor elija otra habitación.", "error");
         return;
     }
 
@@ -113,6 +108,8 @@ function handleEditFormSubmit(event) {
     }
 
     reservations[currentEditIndex] = {
+        firstName: firstName,
+        lastName: lastName,
         checkInDate: checkInDate,
         checkOutDate: checkOutDate,
         roomType: roomType,

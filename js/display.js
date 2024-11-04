@@ -18,7 +18,8 @@ export function displayReservations() {
         const reservationDiv = document.createElement('div');
         reservationDiv.className = 'reservation-item';
         reservationDiv.innerHTML = `
-            <p><strong>Fecha de entrada:</strong> ${reservation.checkInDate} - 
+            <p><strong>Nombre:</strong> ${reservation.firstName} ${reservation.lastName} - 
+            <strong>Fecha de entrada:</strong> ${reservation.checkInDate} - 
             <strong>Fecha de salida:</strong> ${reservation.checkOutDate} - 
             <strong>Tipo de habitación:</strong> ${capitalizeFirstLetter(reservation.roomType)} - 
             <strong>Adultos:</strong> ${reservation.adults} - 

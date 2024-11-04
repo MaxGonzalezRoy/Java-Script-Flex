@@ -48,6 +48,8 @@ function showToast(message, type = "success") {
 async function handleFormSubmit(event) {
     event.preventDefault();
 
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
     const checkInDate = document.getElementById('check-in-date').value;
     const checkOutDate = document.getElementById('check-out-date').value;
     const roomType = document.getElementById('room-type').value;
@@ -90,7 +92,7 @@ async function handleFormSubmit(event) {
         return;
     }
 
-    const reservation = createReservation(checkIn, checkOut, roomType, adults, minors);
+    const reservation = createReservation(firstName, lastName, checkIn, checkOut, roomType, adults, minors);
     addReservation(reservation);
 
     reduceRoomAvailability(roomType);
@@ -107,8 +109,10 @@ async function handleFormSubmit(event) {
     showToast("Reserva realizada con éxito");
 }
 
-function createReservation(checkIn, checkOut, roomType, adults, minors) {
+function createReservation(firstName, lastName, checkIn, checkOut, roomType, adults, minors) {
     return {
+        firstName,
+        lastName,
         checkInDate: checkIn.toISODate(),
         checkOutDate: checkOut.toISODate(),
         roomType,
